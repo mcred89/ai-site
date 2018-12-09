@@ -2,8 +2,12 @@
 # Deploy or update the site
 
 ```bash
+virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
+pip uninstall tensorboard
+pip uninstall keras-applications
+rm -rf venv/Libs/site-packages/tensorflow/contrib/
 zappa deploy prod
 ```
 
@@ -22,3 +26,9 @@ Deploy your cert (this takes awhile to propigate):
 
 Tear it all down with:
 > zappa undeploy
+
+## Notes
+
+- Deploy package is too large. Created layers. Am getting a WGSI error.
+- Models and layers (layers in seperate repo) are manually deployed.
+- Will likley need to switch to serverless + layers.
