@@ -6,8 +6,8 @@ plugins:
 
 custom:
   wsgi:
-    app: index.app
-    packRequirements: false
+    app: app.app
+    packRequirements: true
   pythonRequirements:
     dockerizePip: non-linux
 
@@ -16,12 +16,14 @@ provider:
   runtime: python3.6
   stage: dev
   region: us-west-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action: s3:*
+      Resource: "*"
 
 functions:
   app:
     handler: wsgi.handler
-    layers:
-      - arn:aws:lambda:us-west-2:824269988929:layer:ml-layer:1
     events:
-      - http: 'ANY /'
+      - http: ANY /
       - http: 'ANY {proxy+}'
