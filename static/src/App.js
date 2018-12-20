@@ -1,27 +1,44 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { CatVsDog } from './containers/CatVsDog';
+import { About } from './containers/About';
+import { HashRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+          <Router>
+            <div>
+              <NavBar />
+              <Switch>
+                <Route exact path='/' component={CatVsDog} />
+                <Route exact path='/about' component={About} />
+                <Route path='/catvsdog' component={CatVsDog} />
+              </Switch>
+            </div>
+          </Router>
       </div>
     );
+  }
+}
+
+class NavBar extends Component {
+  render() {
+    return (
+      <div>
+      <nav className="navbar navbar-expand-lg navbar-dark  bg-dark">
+        <Link className="navbar-brand" to="/">TheMcIlroyAI</Link>
+        <ul className="navbar-nav">
+          <li className="nav-item">
+            <Link className="nav-link" to="/about">About</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/catvsdog">CatVsDog</Link>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    )
   }
 }
 
