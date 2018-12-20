@@ -1,0 +1,17 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - npm install -g serverless
+      - cd static
+      - npm install
+  pre_build:
+    commands:
+      - export CI=true
+      - npm test
+  build:
+    commands:
+      - npm run-script build
+  post_build:
+    commands:
+      - serverless deploy --stage prod
