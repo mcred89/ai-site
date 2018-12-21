@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ImageInput from '../components/ImageInput';
+import CatOrDogOutput from '../components/PredictCatOrDog'
 
 export class CatVsDog extends Component {
 
@@ -7,49 +7,40 @@ export class CatVsDog extends Component {
         super(props);
         this.state = {
             file: '',
-            imagePreviewUrl: ''
+            needsToFillOutForm: true
         };
-
-        this.handleFile = this.handleFile.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleFile(event) {
-        var reader = new FileReader();
-        var file = event.target.files[0];
-        
-        reader.onloadend = () => {
-            this.setState({
-              file: file,
-              imagePreviewUrl: reader.result
-            })
-        }
-        
-        reader.readAsDataURL(file);
-    }
-
-    handleSubmit(event) {
-        event.preventDeafault();
-    }
-
-    render() {
+        this.fileInput = React.createRef();
+      }
+      handleSubmit(event) {
+        event.preventDefault();
+        this.setState({
+            needsToFillOutForm: false,
+            file: this.fileInput.current.files[0]
+        });
+      }
+    
+      render() {
         return (
             <div className="row">
-            <div className="col-5"></div>
-                <form 
-                    className="form-group card bg-dark text-white mt-5"
-                    onSubmit={this.handleSubmit}
-                    encType="multipart/form-data">
-                <ImageInput
-                    name={'maxSquat'}
-                    clickFunc={this.handleFile} />
-                <button
-                    type="submit"
-                    className="button btn btn-primary mt-3">Submit</button>
+                <div className="col-5"></div>
+                <div className="card bg-dark text-white m-5">
+                <form onSubmit={this.handleSubmit} className="card-body form-group">
+                    <input type="file" ref={this.fileInput} />
+                    <br />
+                    <button
+                        type="submit"
+                        className="button btn btn-primary mt-3">Submit</button>
                 </form>
-            <div className="col-3"></div>
+                <div className="card-footer">
+                    <CatOrDogOutput image={this.state.file}/>
+                </div>
+                </div>
+                <div className="col-3"></div>
             </div>
-           
         );
       }
     }
+
+
+
