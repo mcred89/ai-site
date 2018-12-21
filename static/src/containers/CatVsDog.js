@@ -9,8 +9,8 @@ export class CatVsDog extends Component {
         this.state = {
             file: null,
             prediction: '',
-            vgg16: null,
-            model: null
+            vgg16: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/headless_vgg16/model.json'),
+            model: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier/model.json')
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.fileInput = React.createRef();
@@ -20,13 +20,16 @@ export class CatVsDog extends Component {
 
       handleSubmit(event) {
         event.preventDefault();
-        let image = this.getImage(this.fileInput.current.files[0])
-        let features = this.state.vgg16.predict(image)
+        this.loadModels();
+        let image = this.getImage(this.fileInput.current.files[0]);
+        console.log(image)
+        console.log(this.state.vgg16)
+        let features = this.state.vgg16.predict(image);
         let prediction = this.state.model.predict(features);
         this.setState({
             prediction: prediction
         });
-        
+        console.log(typeof prediction)
 
       }
 
@@ -38,39 +41,22 @@ export class CatVsDog extends Component {
             img_obj.width = 150
             img_obj.height = 150
             const image = tf.fromPixels(img_obj);
-            //const croppedImage = cropImage(image);
-            //const batchedImage = image.expandDims(0);
-            //return batchedImage.toFloat().div(255).sub(1);
-            return image
+            const batchedImage = image.expandDims(0);
+            return batchedImage.toFloat().div(255).sub(1);
         });
       }
-
-      cropImage(img) {
-        const width = img.shape[0];
-        const height = img.shape[1];
-    
-        const shorterSide = Math.min(img.shape[0], img.shape[1]);
-        
-        const startingHeight = (height - shorterSide) / 2;
-        const startingWidth = (width - shorterSide) / 2;
-        const endingHeight = startingHeight + shorterSide;
-        const endingWidth = startingWidth + shorterSide;
-        
-        const cropped = img.slice([startingWidth, startingHeight, 0], [endingWidth, endingHeight, 3])
-        return tf.image.resizeBilinear(cropped, [150, 150]);
-      }
-
       componentDidMount() {
         this.loadModels();
       }
 
       loadModels = async() => {
         this.setState({
-            //const vgg16 = tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/headless_vgg16/model.json');
-            //const model = tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier/model.json');
-            vgg16: tf.loadModel('../../models/headless_vgg16/model.json'),
-            model: tf.loadModel('../../models/catvsdog_classifier/model.json')
+            vgg16: await tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/headless_vgg16/model.json'),
+            model: await tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier/model.json')
+            //vgg16: await tf.loadModel('../../models/headless_vgg16/model.json'),
+            //model: await tf.loadModel('../../models/catvsdog_classifier/model.json')
         })
+        console.log(this.state.vgg16)
         }
     
       render() {
