@@ -11,64 +11,63 @@ export class CatVsDog extends Component {
             prediction: '',
             loadedImage: null,
             vgg16: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/headless_vgg16/model.json'),
-            model: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier/model.json')
+            model: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier224/model.json')
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.fileInput = React.createRef();
         this.getImage = this.getImage.bind(this);
-        this.cropImage = this.cropImage.bind(this);
         this.loadModels = this.loadModels.bind(this);
+        this.predictImage = this.predictImage.bind(this);
       }
 
       handleSubmit(event) {
         let response
         event.preventDefault();
-        let image = this.getImage(this.fileInput.current.files[0]);
-        let features = this.state.vgg16.predict(image);
-        let predict = this.state.model.predict(features);
-        if (predict === 1 ) {
+        const image = this.getImage(this.fileInput.current.files[0]);
+        const prediction = this.predictImage(image)
+        if (prediction === 1 ) {
             response = 'Cat'
-        } else if (predict === 1 ) {
+        } else if (prediction === 1 ) {
             response = 'Dog'
         }
         this.setState({
             prediction: response,
             loadedImage: URL.createObjectURL(this.fileInput.current.files[0])
         });
-        console.log(image.shape)
-        console.log(predict.toString())
+        console.log(prediction.dataSync()[0])
       }
 
-      cropImage(img) {
-        const size = Math.min(img.shape[0], img.shape[1]);
-        const centerHeight = img.shape[0] / 2;
-        const beginHeight = centerHeight - (size / 2);
-        const centerWidth = img.shape[1] / 2;
-        const beginWidth = centerWidth - (size / 2);
-        return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
+      predictImage(image) {
+        let features = this.state.vgg16.predict(image);
+        let predict = this.state.model.predict(features);
+        return predict
       }
 
       getImage(img) {
         return tf.tidy(() => {
             let img_obj = new Image()
             img_obj.src = img
-            img_obj.alt = 'alt'
-            img_obj.width = 150
-            img_obj.height = 150
-            const image = tf.fromPixels(img_obj);
-            const croppedImage = this.cropImage(image)
-            const batchedImage = croppedImage.expandDims(0);
-            return batchedImage
+            img_obj.width = 224
+            img_obj.height = 224
+            const tensor = tf.fromPixels(img_obj).toFloat();
+            const offset = tf.scalar(1/225);
+            const normalized = tensor.mul(offset);
+            const batched = normalized.reshape([1, 224, 224, 3]);
+            return batched
         });
+        //const croppedImage = this.cropImage(image)
+        //const batchedImage = croppedImage.expandDims(0);
+        //return batchedImage
       }
+
       componentDidMount() {
-        this.loadModels();
+        this.loadModels()
       }
 
       loadModels = async() => {
         this.setState({
             vgg16: await tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/headless_vgg16/model.json'),
-            model: await tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier/model.json')
+            model: await tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier224/model.json')
         })
         }
     
@@ -86,7 +85,7 @@ export class CatVsDog extends Component {
                 </form>
                 {this.state.prediction === '' ? (<div/>) : (
                     <div className="card-footer">
-                        <img src={this.state.loadedImage} width="150" height="150" alt="alt"/>
+                        <img src={this.state.loadedImage} width="224" height="224" alt="alt"/>
                         <h3>{this.state.prediction}</h3>
                     </div>
                  )}
