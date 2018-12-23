@@ -1,5 +1,8 @@
 *.zip
 .requirements
+models/vgg16/
+full_vgg16.h5
+gen_vgg.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
