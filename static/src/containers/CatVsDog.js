@@ -8,7 +8,7 @@ export class CatVsDog extends Component {
         super(props);
         this.state = {
             prediction: '',
-            loadedImage: null,
+            imageValue: null,
             fileInput: React.createRef(),
             vgg16: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/headless_vgg16/model.json'),
             model: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier2/model.json')
@@ -18,13 +18,32 @@ export class CatVsDog extends Component {
         this.getImage = this.getImage.bind(this);
         this.loadModels = this.loadModels.bind(this);
         this.predictImage = this.predictImage.bind(this);
+        this.handleFile = this.handleFile.bind(this);
       }
 
       handleSubmit(event) {
-        let response
         event.preventDefault();
-        const image = this.getImage(this.fileInput.current.files[0]);
-        const prediction = this.predictImage(image).as1D().argMax().dataSync()[0]
+        this.getImage(this.state.src);
+
+      }
+
+      predictImage(image) {
+        let features = this.state.vgg16.predict(image);
+        let predict = this.state.model.predict(features);
+        return predict
+      }
+
+      getImage(img) {
+        let response
+        let img_obj = new Image()
+        img_obj.src = img;
+        console.log(img_obj)
+        img_obj.width = 150
+        img_obj.height = 150
+        const tensor = tf.fromPixels(img_obj);
+        let meanImageNetRGB= tf.tensor1d([123.68,116.779,103.939]);
+        const batched = tensor.sub(meanImageNetRGB).reverse(2).expandDims(0);
+        const prediction = this.predictImage(batched).as1D().argMax().dataSync()[0]
         if (prediction === 0 ) {
             response = 'Cat'
         } else if (prediction === 1 ) {
@@ -35,25 +54,24 @@ export class CatVsDog extends Component {
             loadedImage: URL.createObjectURL(this.fileInput.current.files[0])
         });
         console.log(prediction)
-      }
-
-      predictImage(image) {
-        let features = this.state.vgg16.predict(image);
-        let predict = this.state.model.predict(features);
-        return predict
-      }
-
-      getImage(img) {
-        let img_obj = new Image()
-        img_obj.src = img;
-        console.log(img_obj)
-        img_obj.width = 150
-        img_obj.height = 150
-        const tensor = tf.fromPixels(img_obj);
-        let meanImageNetRGB= tf.tensor1d([123.68,116.779,103.939]);
-        const batched = tensor.sub(meanImageNetRGB).reverse(2).expandDims(0);
         return batched
       }
+
+      handleFile(event) {
+        console.log('handleFile')
+        let file = event.target.files[0]
+        let reader = new FileReader()
+        let self = this
+        reader.onload = function(r){
+            self.setState({
+                src: r.target.result
+            });
+        }
+        let read_file = reader.readAsDataURL(file);
+        self.setState({imageValue:read_file});
+
+      }
+
 
       componentDidMount() {
         this.loadModels()
@@ -73,6 +91,7 @@ export class CatVsDog extends Component {
                 <div className="card bg-dark text-white m-5">
                 <form onSubmit={this.handleSubmit} className="card-body form-group">
                     <input type="file"
+                        onChange={this.handleFile}
                         ref={this.fileInput}
                         accept="image/png, image/jpeg"/>
                     <br />
@@ -82,7 +101,7 @@ export class CatVsDog extends Component {
                 </form>
                 {this.state.prediction === '' ? (<div/>) : (
                     <div className="card-footer">
-                        <img src={this.state.loadedImage}
+                        <img src={this.state.src}
                             width="224" height="224" alt="alt"/>
                         <h3>{this.state.prediction}</h3>
                     </div>
