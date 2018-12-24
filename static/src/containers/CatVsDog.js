@@ -9,6 +9,7 @@ export class CatVsDog extends Component {
         this.state = {
             prediction: '',
             imageValue: null,
+            displayImage: null,
             fileInput: React.createRef(),
             vgg16: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/headless_vgg16/model.json'),
             model: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier2/model.json')
@@ -35,12 +36,7 @@ export class CatVsDog extends Component {
 
       getImage(img) {
         let response
-        let img_obj = new Image()
-        img_obj.src = img;
-        console.log(img_obj)
-        img_obj.width = 150
-        img_obj.height = 150
-        const tensor = tf.fromPixels(img_obj);
+        const tensor = tf.fromPixels(img);
         let meanImageNetRGB= tf.tensor1d([123.68,116.779,103.939]);
         const batched = tensor.sub(meanImageNetRGB).reverse(2).expandDims(0);
         const prediction = this.predictImage(batched).as1D().argMax().dataSync()[0]
@@ -51,7 +47,7 @@ export class CatVsDog extends Component {
         }
         this.setState({
             prediction: response,
-            loadedImage: URL.createObjectURL(this.fileInput.current.files[0])
+            displayImage: URL.createObjectURL(this.fileInput.current.files[0])
         });
         console.log(prediction)
         return batched
@@ -63,12 +59,16 @@ export class CatVsDog extends Component {
         let reader = new FileReader()
         let self = this
         reader.onload = function(r){
+            let img_obj = new Image()
+            img_obj.src = r.target.result;
+            img_obj.width = 150
+            img_obj.height = 150
             self.setState({
-                src: r.target.result
+                src: img_obj
             });
         }
         let read_file = reader.readAsDataURL(file);
-        self.setState({imageValue:read_file});
+        self.setState({ imageValue: read_file });
 
       }
 
@@ -101,7 +101,7 @@ export class CatVsDog extends Component {
                 </form>
                 {this.state.prediction === '' ? (<div/>) : (
                     <div className="card-footer">
-                        <img src={this.state.src}
+                        <img src={this.state.displayImage}
                             width="224" height="224" alt="alt"/>
                         <h3>{this.state.prediction}</h3>
                     </div>
