@@ -78,6 +78,9 @@ export class CatVsDog extends Component {
             <div className="row">
                 <div className="col-5"></div>
                 <div className="card bg-dark text-white m-5">
+                <div className="card-header">
+                    Upload a picture of a cat or a dog.
+                </div>
                 <form onSubmit={this.handleSubmit} className="card-body form-group">
                     <input type="file"
                         onChange={this.handleFile}
@@ -92,7 +95,11 @@ export class CatVsDog extends Component {
                     <div className="card-footer">
                         <img src={this.state.displayImage}
                             width="224" height="224" alt="alt"/>
-                        <h3>{this.state.prediction}</h3>
+                        <br/>
+                        <h3 className="pt-2">{this.state.prediction}</h3>
+                        <a href="https://github.com/mcred89/ai-site/blob/master/static/src/containers/CatVsDog.js">
+                            See code on GitHub
+                        </a>
                     </div>
                 )}
                 </div>
