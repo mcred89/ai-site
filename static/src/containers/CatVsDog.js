@@ -12,7 +12,7 @@ export class CatVsDog extends Component {
             displayImage: null,
             fileInput: React.createRef(),
             vgg16: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/headless_vgg16/model.json'),
-            model: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier2/model.json')
+            model: tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier/model.json')
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.fileInput = React.createRef();
@@ -69,7 +69,7 @@ export class CatVsDog extends Component {
     loadModels = async() => {
         this.setState({
             vgg16: await tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/headless_vgg16/model.json'),
-            model: await tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier2/model.json')
+            model: await tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier/model.json')
         })
     }
     
