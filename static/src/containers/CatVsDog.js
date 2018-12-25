@@ -75,11 +75,11 @@ export class CatVsDog extends Component {
     
     render() {
         return (
-            <div className="row">
-                <div className="col-5"></div>
+
+            <div>
                 <div className="card bg-dark text-white m-5">
                 <div className="card-header">
-                    Upload a picture of a cat or a dog.
+                    <p>Upload a picture of a cat or a dog.</p>
                 </div>
                 <form onSubmit={this.handleSubmit} className="card-body form-group">
                     <input type="file"
@@ -93,21 +93,19 @@ export class CatVsDog extends Component {
                 </form>
                 {this.state.prediction === '' ? (<div/>) : (
                     <div className="card-footer">
+                        <h5>Your picture, formatted for input into the network:</h5>
                         <img src={this.state.displayImage}
                             width="224" height="224" alt="alt"/>
                         <br/>
-                        <h3 className="pt-2">{this.state.prediction}</h3>
-                        <a href="https://github.com/mcred89/ai-site/blob/master/static/src/containers/CatVsDog.js">
-                            See code on GitHub
-                        </a>
+                        <h5 className="pt-2">Prediction: {this.state.prediction}</h5>
+                        <a href="https://github.com/mcred89/ai-site/blob/master/static/src/containers/CatVsDog.js"
+                            className="btn btn-secondary btn-lg" role="button" aria-disabled="true">See frontend code</a>
+                        <a href="https://github.com/mcred89/JupyterNotebooks/blob/master/P4-practical-matters/practical-matters.ipynb"
+                            className="btn btn-secondary btn-lg" role="button" aria-disabled="true">See machine learning code</a>
                     </div>
                 )}
                 </div>
-                <div className="col-3"></div>
             </div>
         );
       }
     }
-
-
-
