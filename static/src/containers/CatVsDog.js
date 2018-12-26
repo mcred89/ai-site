@@ -68,8 +68,8 @@ export class CatVsDog extends Component {
 
     loadModels = async() => {
         this.setState({
-            vgg16: await tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/headless_vgg16/model.json'),
-            model: await tf.loadModel('https://s3-us-west-2.amazonaws.com/testing-models/catvsdog_classifier/model.json')
+            vgg16: await tf.loadModel('https://s3-us-west-2.amazonaws.com/ai-themcilroy-models/headless_vgg16/model.json'),
+            model: await tf.loadModel('https://s3-us-west-2.amazonaws.com/ai-themcilroy-models/catvsdog_classifier/model.json')
         })
     }
     

@@ -7,8 +7,7 @@ phases:
       - npm install
   pre_build:
     commands:
-      - export CI=true
-      - npm test
+      - echo "pre-build"
   build:
     commands:
       - npm run-script build

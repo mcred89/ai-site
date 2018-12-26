@@ -99,6 +99,7 @@ Resources:
               - Action:
                   - s3:*
                   - cloudformation:*
+                  - cloudfront:*
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
