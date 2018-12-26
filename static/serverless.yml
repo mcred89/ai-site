@@ -15,9 +15,9 @@ provider:
 
 custom:
   siteName:
-    dev: dev.ai.themcilroy.com
+    dev: devai.themcilroy.com
     prod: ai.themcilroy.com
-  acmARN: arn:aws:acm:us-east-1:824269988929:certificate/bd50582e-33ea-4a24-9339-6b716409c669
+  acmARN: arn:aws:acm:us-east-1:824269988929:certificate/fdc01f6c-be49-40b3-afb7-707d085d1042
   aliasDNSName: s3-website-us-west-2.amazonaws.com
   s3Sync:
     - bucketName: ${self:custom.siteName.${self:provider.stage}}
