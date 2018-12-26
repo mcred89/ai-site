@@ -2,6 +2,7 @@ version: 0.2
 phases:
   install:
     commands:
+      - aws s3 cp models/ s3://ai-themcilroy-models/ --recursive
       - npm install -g serverless
       - cd static
       - npm install
