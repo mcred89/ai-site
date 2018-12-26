@@ -15,7 +15,7 @@ provider:
 
 custom:
   siteName:
-    dev: dev.ai.themcilroy.com
+    dev: devai.themcilroy.com
     prod: ai.themcilroy.com
   acmARN: arn:aws:acm:us-east-1:824269988929:certificate/bd50582e-33ea-4a24-9339-6b716409c669
   aliasDNSName: s3-website-us-west-2.amazonaws.com
@@ -64,7 +64,7 @@ resources:
             Fn::GetAtt: SiteCloudFront.DomainName
           # https://docs.aws.amazon.com/general/latest/gr/rande.html#cf_region
           HostedZoneId: Z2FDTNDATAQYW2
-        HostedZoneName: ${self:custom.siteName.prod}.
+        HostedZoneName: themcilroy.com.
         Name:
           Ref: StaticSite
         Type: 'A'
