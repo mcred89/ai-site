@@ -79,7 +79,24 @@ export class CatVsDog extends Component {
             <div>
                 <div className="card bg-dark text-white m-5">
                 <div className="card-header">
-                    <p>Upload a picture of a cat or a dog.</p>
+                    <h3>
+                        Convolutional Neural Net classifer for cats and dogs. 
+                    </h3>
+                    <br/>
+                    <p>
+                        This was a fairly simple project.
+                        The actual goal wasn't really a cat/dog classifier, but rather exploring slightly more advanced ML topics like:
+                    </p>
+                    <ul>
+                        <li>Image (data) generation</li>
+                        <li>Using pre-trained models</li>
+                        <li>Tensorboard</li>
+                        <li>Model export and use in tensorflowjs</li>
+                    </ul>
+                    <br/>
+                    <h4>
+                        Upload a picture of a cat or a dog.
+                    </h4>
                 </div>
                 <form onSubmit={this.handleSubmit} className="card-body form-group">
                     <input type="file"
