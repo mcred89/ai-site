@@ -13,6 +13,7 @@ export class Tweeter extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.loadModels = this.loadModels.bind(this);
         this.generateTweet = this.generateTweet.bind(this);
+        this.reweightWord = this.reweightWord.bind(this);
     }
 
     handleSubmit(event) {
@@ -20,10 +21,45 @@ export class Tweeter extends Component {
         this.generateTweet();
     }
 
+    reweightWord(preds, temperature) {
+        return tf.tidy(() => {
+          const logPreds = tf.div(tf.log(preds), temperature);
+          const expPreds = tf.exp(logPreds);
+          const sumExpPreds = tf.sum(expPreds);
+          preds = tf.div(expPreds, sumExpPreds);
+          // Treat preds a the probabilites of a multinomial distribution and
+          // randomly draw a sample from the distribution.
+          return tf.multinomial(preds, 1, null, true).dataSync()[0];
+        })
+    }
+
+
     generateTweet() {
-        let response
+        // Basis for this function:
+        // https://github.com/tensorflow/tfjs-examples/blob/master/lstm-text-generation/index.js#L147
+        const temperature = tf.scalar(0.5);
+        const length = 20
+        const outputTweet = '';
+        const trainingLength = 3;
+        // Need to download dict and get length + 1 for numberOfWords
+        const numberOfWords = '?';
+        const inputWords = new tf.TensorBuffer([1, trainingLength, numberOfWords]);
+        for (let i = 0; i < trainingLength; ++i) {
+            let index = Math.floor((Math.random() * numberOfWords) + 1);
+            inputWords.set(1, 0, i, index[i]);
+        }
+        const input = inputWords.toTensor();
+        for (let i = 0; i < length; ++i) {
+            let prediction = this.state.model.predict(input)
+            const wordIndex = sample(tf.squeeze(prediction), temperature);
+            // Need to download dict and use to lookup word. getWord is just filler.
+            const word = getWord(wordIndex);
+            outputTweet += word;
+            input = input.slice(1);
+            input.push(wordIndex);
+        }
         this.setState({
-            tweet: response
+            tweet: outputTweet
         });
         console.log('Tweet: ' + this.state.tweet)
     }
