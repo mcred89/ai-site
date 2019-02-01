@@ -85,7 +85,7 @@ export class CatVsDog extends Component {
                     <br/>
                     <p>
                         This was a fairly simple project.
-                        The actual goal wasn't really a cat/dog classifier, but rather exploring slightly more advanced ML topics like:
+                        The actual goal wasn't really a cat/dog classifier, but rather exploring slightly more practical ML topics like:
                     </p>
                     <ul>
                         <li>Image (data) generation</li>
@@ -117,7 +117,7 @@ export class CatVsDog extends Component {
                         <h5 className="pt-2">Prediction: {this.state.prediction}</h5>
                         <a href="https://github.com/mcred89/ai-site/blob/master/static/src/containers/CatVsDog.js"
                             className="btn btn-secondary btn-lg" role="button" aria-disabled="true">See frontend code</a>
-                        <a href="https://github.com/mcred89/JupyterNotebooks/blob/master/P4-practical-matters/practical-matters.ipynb"
+                        <a href="https://github.com/mcred89/notebooks/blob/master/P4-practical-matters/practical-matters.ipynb"
                             className="btn btn-secondary btn-lg" role="button" aria-disabled="true">See machine learning code</a>
                     </div>
                 )}

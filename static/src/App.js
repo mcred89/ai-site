@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { CatVsDog } from './containers/CatVsDog';
-import { Tweeter } from './containers/Tweeter';
 import { About } from './containers/About';
 import { HashRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
@@ -15,7 +14,6 @@ class App extends Component {
                 <Route exact path='/' component={CatVsDog} />
                 <Route exact path='/about' component={About} />
                 <Route path='/catvsdog' component={CatVsDog} />
-                <Route path='/tweeter' component={Tweeter} />
               </Switch>
             </div>
           </Router>
@@ -36,9 +34,6 @@ class NavBar extends Component {
           </li>
           <li className="nav-item">
             <Link className="nav-link" to="/catvsdog">CatVsDog</Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/tweeter">Tweeter</Link>
           </li>
         </ul>
       </nav>
