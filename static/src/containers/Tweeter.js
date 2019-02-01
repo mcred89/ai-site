@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as tf from '@tensorflow/tfjs';
-
+import { tweet_word_lookup } from '../data/tweet_dict_reverse'
 
 export class Tweeter extends Component {
 
@@ -27,8 +27,6 @@ export class Tweeter extends Component {
           const expPreds = tf.exp(logPreds);
           const sumExpPreds = tf.sum(expPreds);
           preds = tf.div(expPreds, sumExpPreds);
-          // Treat preds a the probabilites of a multinomial distribution and
-          // randomly draw a sample from the distribution.
           return tf.multinomial(preds, 1, null, true).dataSync()[0];
         })
     }
@@ -39,21 +37,22 @@ export class Tweeter extends Component {
         // https://github.com/tensorflow/tfjs-examples/blob/master/lstm-text-generation/index.js#L147
         const temperature = tf.scalar(0.5);
         const length = 20
-        const outputTweet = '';
+        let outputTweet = '';
         const trainingLength = 3;
         // Need to download dict and get length + 1 for numberOfWords
-        const numberOfWords = '?';
+        const reverseLookup = tweet_word_lookup;
+        const numberOfWords = Object.keys(reverseLookup).length + 1;
         const inputWords = new tf.TensorBuffer([1, trainingLength, numberOfWords]);
         for (let i = 0; i < trainingLength; ++i) {
             let index = Math.floor((Math.random() * numberOfWords) + 1);
             inputWords.set(1, 0, i, index[i]);
         }
-        const input = inputWords.toTensor();
+        let input = inputWords.toTensor();
         for (let i = 0; i < length; ++i) {
             let prediction = this.state.model.predict(input)
-            const wordIndex = sample(tf.squeeze(prediction), temperature);
+            const wordIndex = this.reweightWord(tf.squeeze(prediction), temperature);
             // Need to download dict and use to lookup word. getWord is just filler.
-            const word = getWord(wordIndex);
+            const word = reverseLookup[wordIndex];
             outputTweet += word;
             input = input.slice(1);
             input.push(wordIndex);
